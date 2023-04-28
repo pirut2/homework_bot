@@ -1,20 +1,14 @@
 class BaseErorr(Exception):
     """Базовый класс ошибки."""
 
-    pass
-
-
-class ResponseError(BaseErorr):
-    """Статус ответа на API запрос не равен 200."""
-
     def __init__(self, msg, code):
         """Конструктор."""
         self.msg = msg
         self.code = code
 
 
-class PageError(BaseErorr):
-    """Что то не так."""
+class ResponseError(BaseErorr):
+    """Статус ответа на API запрос не равен 200."""
 
     pass
 

@@ -39,8 +39,7 @@ def check_tokens():
         if not globals()[name]:
             logging.critical(f'Проблемы с токеном {name}', exc_info=True)
             raise exceptions.CheckTokensError
-        else:
-            return all([PRACTICUM_TOKEN, TELEGRAM_TOKEN, TELEGRAM_CHAT_ID])
+        return all([PRACTICUM_TOKEN, TELEGRAM_TOKEN, TELEGRAM_CHAT_ID])
 
 
 def send_message(bot, message):
@@ -101,6 +100,12 @@ def parse_status(homework):
     try:
         verdict = HOMEWORK_VERDICTS[homework.get('status')]
         homework_name = homework.get('homework_name')
+    except KeyError:
+        logging.critical('Ошибка в значении ключа.', exc_info=True)
+    except TypeError:
+        logging.critical('Ошибка в значении типа.', exc_info=True)
+    except SyntaxError:
+        logging.critical('Синтаксическая ошибка.', exc_info=True)
     except Exception as erorr:
         logging.error(f'Неожиданная ошибка {erorr}'
                       'при запросе статуса домашней работы.', exc_info=True)
@@ -131,15 +136,10 @@ def main():
                     logging.info('Ничего нового в статусе домашней работы.')
             else:
                 logging.info('Статус не изменился.')
-        except KeyError:
-            logging.critical('Ошибка в значении ключа.', exc_info=True)
-        except TypeError:
-            logging.critical('Ошибка в значении типа.', exc_info=True)
-        except SyntaxError:
-            logging.critical('Синтаксическая ошибка.', exc_info=True)
         except Exception as error:
             message = f'Сбой в работе программы: {error}'
             logging.critical(message, exc_info=True)
+            raise exceptions.BaseErorr('Большие проблемы в main.')
         finally:
             time.sleep(RETRY_PERIOD)
 
